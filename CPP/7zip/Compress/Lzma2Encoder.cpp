@@ -2,6 +2,8 @@
 
 #include "StdAfx.h"
 
+#include <algorithm>
+
 #include "../../../C/Alloc.h"
 #include "../../../C/Lzma2Enc.h"
 #include "../../../C/fast-lzma2/fl2_errors.h"
@@ -11,7 +13,6 @@
 #include "../../Windows/System.h"
 
 #include "Lzma2Encoder.h"
-#pragma warning(disable : 4127)
 
 namespace NCompress {
 
@@ -205,7 +206,7 @@ HRESULT CFastEncoder::FastLzma2::SetCoderProperties(const PROPID *propIDs, const
   UInt64 reduceSize = lzma2Props.lzmaProps.reduceSize;
   reduceSize += (reduceSize < (UInt64)-1); /* prevent extra buffer shift after read */
   dictSize = (UInt32)min(dictSize, reduceSize);
-  dictSize = max(dictSize, FL2_DICTSIZE_MIN);
+  dictSize = (UInt32)max(dictSize, FL2_DICTSIZE_MIN);
   CHECK_P(FL2_CCtx_setParameter(fcs, FL2_p_dictionarySize, dictSize));
   if (lzma2Props.lzmaProps.algo >= 0) {
     CHECK_P(FL2_CCtx_setParameter(fcs, FL2_p_strategy, (unsigned)lzma2Props.lzmaProps.algo));
